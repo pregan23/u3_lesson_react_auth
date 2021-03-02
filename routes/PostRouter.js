@@ -8,7 +8,17 @@ router.post(
   middleware.verifyToken,
   controller.CreatePost
 )
-router.put('/:post_id', controller.UpdatePost)
-router.delete('/:post_id', controller.DeletePost)
+router.put(
+  '/:post_id',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.UpdatePost
+)
+router.delete(
+  '/:post_id',
+  middleware.stripToken,
+  middleware.verifyToken,
+  controller.DeletePost
+)
 
 module.exports = router
