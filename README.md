@@ -229,12 +229,30 @@ Final `submitPost`:
 
 ![](images/create_post.png)
 
+## Testing Create Post
+
+Click the `Create Post` button and fill out the form, putting an image url for the `image` field.
+
+Submit the request, you should see a `200` status in your server logs and the new post being appended to the page.
+
+## You Do
+
+- Implement delete post
+  - The `setPosts` function has been passed down to the `PostList` component
+  - A `deleteItem` function has been provided in the `PostList` component
+
+## Bonus
+
+Implement updating a post
+
+No components have been made for this so you'll have to create your own.
+
 ## Recap
 
-In this lesson, we learned how to implement and build Authorization/Authentication middleware. We protected sensitive routes from unauthorized access and added registration and login functionality.
+In this lesson we learned how to integrate authentication and authorization into our client. Our client's view changes based on some kind of state that we store to track changes. Our client facing application is not meant to be secure, thus we must rely on our backend to make sure that the requests are legitimate and authorized.
 
 ## Resources
 
-- [JsonWebToken](https://github.com/auth0/node-jsonwebtoken)
-- [Bcrypt](https://github.com/kelektiv/node.bcrypt.js#readme)
-- [Authentication Vs Authorization](https://medium.datadriveninvestor.com/authentication-vs-authorization-716fea914d55)
+- [Semantic UI React](https://react.semantic-ui.com/)
+- [Local Storage MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+- [Sequelize Auth Lesson](https://github.com/SEI-R-1-25/u3_lab_sequelize_auth)
