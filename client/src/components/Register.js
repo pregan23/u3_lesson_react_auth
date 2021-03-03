@@ -12,10 +12,6 @@ const Register = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post(`${BASE_URL}/auth/register`, registerForm)
-      // Could pre populate the sign up form if state is passed from app.js
-      props.toggleRegister(false)
-      handleRegisterForm({ email: '', password: '', name: '' })
     } catch (error) {
       console.log(error)
     }

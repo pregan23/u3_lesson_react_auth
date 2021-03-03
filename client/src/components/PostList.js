@@ -6,14 +6,6 @@ import { Button, Card, Grid, Icon, Image } from 'semantic-ui-react'
 const PostList = (props) => {
   const deleteItem = async (postId) => {
     try {
-      let token = localStorage.getItem('token')
-      const res = await axios.delete(`${BASE_URL}/posts/${postId}`, {
-        headers: { authorization: `Bearer ${token}` }
-      })
-      let filtered = props.posts.filter(
-        (post) => post.id !== parseInt(res.data.payload)
-      )
-      props.setPosts(filtered)
     } catch (error) {
       console.log(error)
     }

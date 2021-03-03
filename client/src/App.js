@@ -17,13 +17,6 @@ function App() {
   const [newPost, setNewPost] = useState({ title: '', body: '', image: '' })
   const [posts, setPosts] = useState([])
 
-  const getToken = () => {
-    let token = localStorage.getItem('token')
-    if (token) {
-      return setAuthenticated(true)
-    }
-  }
-
   const getPosts = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/posts`)
@@ -33,10 +26,7 @@ function App() {
     }
   }
 
-  const logOut = () => {
-    setAuthenticated(false)
-    localStorage.clear()
-  }
+  const logOut = () => {}
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -46,15 +36,6 @@ function App() {
   const submitPost = async (e) => {
     e.preventDefault()
     try {
-      let token = localStorage.getItem('token')
-      const res = await axios.post(`${BASE_URL}/posts`, newPost, {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
-      })
-      setPosts([...posts, res.data])
-      setNewPost({ title: '', body: '', image: '' })
-      toggleCreatePostOpen(false)
     } catch (error) {
       console.log(error)
     }
@@ -66,7 +47,6 @@ function App() {
   }
 
   useEffect(() => {
-    getToken()
     getPosts()
   }, [])
 

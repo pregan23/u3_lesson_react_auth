@@ -11,11 +11,6 @@ const Login = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post(`${BASE_URL}/auth/login`, loginForm)
-      localStorage.setItem('token', res.data.token)
-      props.toggleAuthenticated(true)
-      props.toggleLogin(false)
-      handleLoginForm({ email: '', password: '' })
     } catch (error) {
       console.log(error)
     }
