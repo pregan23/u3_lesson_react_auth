@@ -44,6 +44,7 @@ function App() {
   }
 
   const submitPost = async (e) => {
+    e.preventDefault()
     try {
       let token = localStorage.getItem('token')
       const res = await axios.post(`${BASE_URL}/posts`, newPost, {
