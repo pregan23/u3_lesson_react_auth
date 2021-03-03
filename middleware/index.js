@@ -5,12 +5,12 @@ const APP_SECRET = 'supersecretkey'
 
 const hashPassword = async (password) => {
   // Accepts a password from the request body
-  let hashedPassword = await bcrypt.hash(password, 12)
+  let hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
   //   Creates a hashed password and encrypts it 12 times
   return hashedPassword
 }
 
-const comparePassword = async (password, storedPassword) => {
+const comparePassword = async (storedPassword, password) => {
   // Accepts the password provided in the login request and the currently stored password
   // Compares the two passwords for a match
   let passwordMatch = await bcrypt.compare(password, storedPassword)
@@ -41,6 +41,7 @@ const verifyToken = (req, res, next) => {
 const stripToken = (req, res, next) => {
   try {
     const token = req.headers['authorization'].split(' ')[1]
+    console.log(token)
     // Gets the token from the request headers {authorization: Bearer Some-Token}
     // Splits the value of the authorization header
     if (token) {
