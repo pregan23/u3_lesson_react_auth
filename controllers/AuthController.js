@@ -8,7 +8,7 @@ const Login = async (req, res) => {
     })
     if (
       user &&
-      middleware.comparePassword(user.passwordDigest, req.body.password)
+      (await middleware.comparePassword(req.body.password, user.passwordDigest))
     ) {
       let payload = {
         id: user.id,
@@ -34,7 +34,27 @@ const Register = async (req, res) => {
   }
 }
 
+const UpdatePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body
+    const user = await User.findByPk(req.params.user_id)
+    if (
+      user &&
+      (await middleware.comparePassword(
+        user.dataValues.passwordDigest,
+        oldPassword
+      ))
+    ) {
+      let passwordDigest = await middleware.hashPassword(newPassword)
+      await user.update({ passwordDigest })
+      return res.send({ status: 'Ok', payload: user })
+    }
+    res.status(401).send({ status: 'Error', msg: 'Unauthorized' })
+  } catch (error) {}
+}
+
 module.exports = {
   Login,
-  Register
+  Register,
+  UpdatePassword
 }

@@ -1,421 +1,258 @@
-# Sequelize Authentication
+# React Authentication
 
-![](https://securityintelligence.com/wp-content/uploads/2018/10/si-advanced-authentication-feature-630x330.jpg)
+![](https://healthitsecurity.com/images/site/features/_normal/GettyImages-1206964126.jpg)
 
 ## Overview
 
-In this lesson, we'll learn to to integrate authentication into our express server. We'll implement password hashing, comparing, creating json web tokens, protecting routes and reading authorization credentials. Our api will allow users to `login`,`register` and protect certain endpoints from being accessed without being properly authorized.
+In this lesson, we'll learn to to integrate authentication into our react client. We'll learn how to persist an authenticated user in our application and how to protect resources from unauthenticated users. This app was build with Semantic UI but we'll be focusing on only integrating the `axios` calls.
 
 ## Getting Started
 
 - Fork and Clone
 - `npm install`
-- `sequelize db:create`
-- `sequelize db:migrate`
-- `sequelize db:seed:all`
 - `npm run dev`
+- `cd client`
+- `npm install`
+- `npm start`
 
-## Creating Authentication/Authorization Middleware
+## Understanding The LocalStorage API
 
-We'll start by creating some middleware to handle our authentication and authorization flows. These functions will perform everything from hashing passwords to ensuring that a user is authorized to access a resource.
+In order to persist a users token, we'll need to use something called `localStorage`. `localStorage` is an in browser memory store.
 
-### Installing Necessary Dependencies
+### What Is LocalStorage
 
-In order for our authentication/authorization middleware to work, we'll need some depedencies. Let's start by installing a few packages:
+> localStorage is a property that allows JavaScript sites and apps to save key/value pairs in a web browser with no expiration date. This means the data stored in the browser will persist even after the browser window is closed.
 
-```sh
-npm install bcrypt jsonwebtoken
-```
+### How Does LocalStorage Work?
 
-#### **Bcrypt**
+To use localStorage in your web applications, there are five methods to choose from:
 
----
+1. `setItem()`: Add key and value to localStorage
+2. `getItem()`: This is how you get items from localStorage
+3. `removeItem()`: Remove an item by key from localStorage
+4. `clear()`: Clear all localStorage
+5. `key()`: Passed a number to retrieve the key of a localStorage
 
-**[Bcrypt](https://github.com/kelektiv/node.bcrypt.js#readme)** is a dependency that we'll use to hash and compare credentials.
+## Setting Up Our Authenticated State
 
-**You should never store plain text passwords in your database!**
-
-We'll utilize two methods from this library:
-
-- `bcrypt.hash()`
-- `bcrypt.compare()`
-
-#### **Jsonwebtoken**
-
----
-
-**[JsonWebToken](https://github.com/auth0/node-jsonwebtoken)** is a dependency that will allow us to generate and verify `JWT` tokens. `JWT` tokens are encrypted strings that store some identifying information about a user. **Never store sensitive information about a user in these tokens!**
-
-### Creating Our Middleware
-
-Create a `middleware` folder in this project:
-
-```sh
-mkdir middleware
-```
-
-In the newly created `middleware` folder, create an `index.js` file:
-
-```sh
-touch middleware/index.js
-```
-
-Start by requiring the necessary packages, we'll need `bcrypt` and `jsonwebtoken`:
+Frontends are not typically the secured portion of our applications. Our resources should be protected by the backend. Our front end will only control what is viewed! To do this, we'll use an `authenticated` state set to `false` initially. The state variables have already been set up for you:
 
 ```js
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const [authenticated, setAuthenticated] = useState(false)
 ```
 
-Next we need to create some variables in order to tell `bcrypt` how complex we want the hash to be for a password and a secret that will sign our `JWT` tokens.
+This boolean will control the view for when a user is successfully authenticated.
 
-Add the following to `middleware/index.js`
+## Building Login Functionality
 
-```js
-const SALT_ROUNDS = 12
-const APP_SECRET = 'supersecretkey'
-```
-
-`SALT_ROUNDS` is how complex the hash will be for our passwords, `12` is a good number because it would take even super computers years to crack.
-
-`APP_SECRET` is the secret key we'll use to sign our `JWT` tokens.
-
-**THESE VARIABLES SHOULD ALWAYS BE STORED IN A `.env` FILE**
-
-When storing these variables in a `.env` file, you'll need to convert `SALT_ROUNDS` to an integer.
-
-#### Hashing Passwords
-
-> **The functions necessary will provided followed by a breakdown of how each function operates**
-
----
-
-Start by creating a password hashing function:
+Find `components/Login.js`. In here we'll set up an `axios` call to make a `login` request to our backend.
+Find the `handleSubmit` method which has been provided for you:
 
 ```js
-const hashPassword = async (password) => {
-  let hashedPassword = await bcrypt.hash(password, 12)
-  return hashedPassword
-}
-```
-
-![](images/hash_password.png)
-
-We're using `async/await` because the hashing process takes some time to complete to we need to tell javascript to wait for it to finish.
-
-#### Comparing Passwords
-
----
-
-Create a password comparing function:
-
-```js
-const comparePassword = async (password, storedPassword) => {
-  let passwordMatch = await bcrypt.compare(password, storedPassword)
-  return passwordMatch
-}
-```
-
-![](images/compare_password.png)
-
-#### Creating `JWT` Tokens
-
-Add a function called `createToken`:
-
-```js
-const createToken = (payload) => {
-  let token = jwt.sign(payload, APP_SECRET)
-  return token
-}
-```
-
-![](images/create_token.png)
-
-#### Verifying `JWT` Tokens
-
----
-
-Add a function called `verifyToken`:
-
-```js
-const verifyToken = (req, res, next) => {
-  const { token } = res.locals
-  let payload = jwt.verify(token, APP_SECRET)
-  if (payload) {
-    return next()
-  }
-  res.status(401).send({ status: 'Error', msg: 'Unauthorized' })
-}
-```
-
-![](images/verify_token.png)
-
-**_Here's a few questions you may want to ask yourselves:_**
-
-- _Why are we all of a sudden passing in `req,res,next`?_
-- _Where may the functions with `req,res,next` be used during a request?_
-
-#### Reading Tokens
-
----
-
-Add a function called `stripToken`:
-
-```js
-const stripToken = (req, res, next) => {
+const handleSubmit = async (e) => {
+  e.preventDefault()
   try {
-    const token = req.headers['authorization'].split(' ')[1]
-    if (token) {
-      res.locals.token = token
-      return next()
+    //  All Code Goes Here
+  } catch (error) {
+    console.log(error)
+  }
+}
+```
+
+In order for this function to work, we'll need to do a few things:
+
+- Perform a `POST` request to `/auth/login` and provide the `Login` form data for the request body
+  ```js
+  const res = await axios.post(`${BASE_URL}/auth/login`, loginForm)
+  ```
+- Set the returned token to `localstorage`
+  ```js
+  localStorage.setItem('token', res.data.token)
+  ```
+- Toggle our `authenticated` state to true
+  ```js
+  props.toggleAuthenticated(true)
+  ```
+- Close the login modal
+  ```js
+  props.toggleLogin(false)
+  ```
+- Clear the login form
+  ```js
+  handleLoginForm({ email: '', password: '' })
+  ```
+
+Final `handleSubmit`:
+
+![](images/login_submit.png)
+
+## Testing Login Functionality
+
+At this point, you should now be able to log in to our application. Utilizing the credentials you created in the `Sequelize Auth` lesson, perform a log in request.
+
+You'll notice that the view for the posts has changed.
+
+## Building Register Functionality
+
+Find `components/Register`. In this component find the `handleSubmit` function.
+
+```js
+const handleSubmit = async (e) => {
+  e.preventDefault()
+  try {
+    // Code goes here
+  } catch (error) {
+    console.log(error)
+  }
+}
+```
+
+- We'll use `axios` make a `POST` request to our backend to register a new user and provide the `registerForm` as the request body
+  ```js
+  const res = await axios.post(`${BASE_URL}/auth/register`, registerForm)
+  ```
+- We close the register model
+  ```js
+  props.toggleRegister(false)
+  ```
+- We finally clear the form
+  ```js
+  handleRegisterForm({ email: '', password: '', name: '' })
+  ```
+
+Final `handleSubmit`:
+
+![](images/register_submit.png)
+
+## Testing Registration
+
+Click on the `Register` button in the application. Let's try to create a new user.
+
+If everyting was done correct, the modal should close and you should see a status `200` in your server logs.
+
+## Persisting Users
+
+Let's log in to our application one more time. If you refresh the page however, you'll notice that we're signed out again. This is because we have not told our React app to check for an existing token.
+
+Find `src/App.js`. We'll start by creating a function called `getToken`. This function is going to check if a token exists in `localStorage`. If the token exists, we toggle our `authenticated` state.
+
+```js
+const getToken = () => {
+  let token = localStorage.getItem('token')
+  if (token) {
+    return setAuthenticated(true)
+  }
+}
+```
+
+Finally, we want this function to fire once the component loads. Add `getToken` to the provided `useEffect`:
+
+```js
+useEffect(() => {
+  getToken()
+  getPosts()
+}, [])
+```
+
+Now refresh your application, you should be automatically logged in!
+
+## Building Log Out
+
+Next we'll finalize our `login/logout` functionality.
+
+In `src/App.js`, a `logOut` function has been provided.
+
+- Set our `authenticated` state to `false`
+  ```js
+  setAuthenticated(false)
+  ```
+- Clear the token from `localstorage`
+  ```js
+  localStorage.clear()
+  ```
+  Final `logOut` function:
+  ![](images/logout.png)
+
+## Testing Log Out
+
+Let's test the log out functionality. Click the `Log Out` button at the top of the page.
+
+The view for the posts should change. If you refresh your page, the view should stay the same!
+
+## Creating Posts
+
+Let's log back in to our application. In order to create posts, we have to be authenticated.
+
+In `src/App.js`, find the `submitPost` function:
+
+```js
+const submitPost = async (e) => {
+  e.preventDefault()
+  try {
+    // Code Goes Here
+  } catch (error) {
+    console.log(error)
+  }
+}
+```
+
+- We'll grab the users token from `localstorage` since we have to tell our api that we're logged in
+  ```js
+  let token = localStorage.getItem('token')
+  ```
+- Perform an `axios` request to create a post and use the `newPost` state as the request body
+  ```js
+  const res = await axios.post(`${BASE_URL}/posts`, newPost)
+  ```
+- We now need to set the `authorization` header for our request
+  ```js
+  const res = await axios.post(`${BASE_URL}/posts`, newPost, {
+    headers: {
+      authorization: `Bearer ${token}`
     }
-  } catch (error) {
-    res.status(401).send({ status: 'Error', msg: 'Unauthorized' })
-  }
-}
-```
-
-![](images/strip_token.png)
-
-### Bundling Our Functions
-
-Now that we've written out all of our functions, it's time to export them:
-
-```js
-module.exports = {
-  stripToken,
-  verifyToken,
-  createToken,
-  comparePassword,
-  hashPassword
-}
-```
-
-We've finished writing out all of our authentication/authorization middleware. Next we'll utilize these functions to perform actions during a request.
-
-## Hashing Passwords
-
-Open the `AuthController.js` file.
-
-You'll notice, that there are two functions already written for you:
-
-```js
-const { User } = require('../models')
-
-const Login = async (req, res) => {
-  try {
-  } catch (error) {
-    throw error
-  }
-}
-
-const Register = async (req, res) => {
-  try {
-  } catch (error) {
-    throw error
-  }
-}
-
-module.exports = {
-  Login,
-  Register
-}
-```
-
-### Building Out Registration
-
-We'll start with building out the functionality for registration.
-
-We first need to require our authentication/authorization middleware:
-
-```js
-const middleware = require('../middleware')
-```
-
-Next we'll work in the `Register` function:
-
-- We'll start by pulling the necessary fields from the request body:
-  ```js
-  const { email, password, name } = req.body
-  ```
-- Next we'll hash the provided password:
-  ```js
-  let passwordDigest = await middleware.hashPassword(password)
-  ```
-- Now we want to create a user utilizing the extracted fields and the newly created `passwordDigest`:
-  ```js
-  const user = await User.create({ email, passwordDigest, name })
-  ```
-- Finally we'll send the newly created user as a response:
-  ```js
-  res.send(user)
-  ```
-
-The final `Register` function:
-
-![](images/register.png)
-
-#### Testing The Register Functionality
-
----
-
-Start your server:
-
-```sh
-npm run dev
-```
-
-Open `Insomnia` and create a `POST` request to `http://localhost:3001/auth/register`. Create a `JSON` request body with the following fields:
-
-```json
-{
-  "name": "string",
-  "email": "string",
-  "password": "string"
-}
-```
-
-Submit the request and you should receive a similar response:
-
-![](images/register_response.png)
-
-### Building Out Login Functionality
-
-Next we'll build out the functionality for `Login`.
-
-Open `AuthController.js`
-
-We'll be working in the `Login` function:
-
-- First we'll find a user by email, emails are set to `unique` so that the database protects against duplicate entries
-  ```js
-  const user = await User.findOne({
-    where: { email: req.body.email },
-    raw: true
   })
   ```
-- We'll check if the user exists and if the stored password and provided password are the same
+- Next we'll add the newly created post to our `posts` state
   ```js
-  if (
-    user &&
-    middleware.comparePassword(user.passwordDigest, req.body.password)
-  ) {
-    // Next code goes here
-  }
+  setPosts([...posts, res.data])
   ```
-- If the condition is met, we'll create a payload for our `JWT` token
+- Clear the post form
   ```js
-  let payload = {
-    id: user.id,
-    email: user.email
-  }
+  setNewPost({ title: '', body: '', image: '' })
   ```
-- We'll create the token and send back a response with the payload and token
+- And finally close the modal
   ```js
-  let token = middleware.createToken(payload)
-  return res.send({ user: payload, token })
-  ```
-  **Remember, never store sensitive user information in the token!**
-- If the user does not exist or the passwords don't match, we'll send back a `401` status code and an `unauthorized` message. This should be the final line in your `try` block, outside of the `if` statement.
-  ```js
-  res.status(401).send({ status: 'Error', msg: 'Unauthorized' })
+  toggleCreatePostOpen(false)
   ```
 
-Here's the final `Login` function:
+Final `submitPost`:
 
-![](images/login.png)
+![](images/create_post.png)
 
-#### Testing The Login Functionality
+## Testing Create Post
 
----
+Click the `Create Post` button and fill out the form, putting an image url for the `image` field.
 
-Open `Insomnia` again, this time we'll send a `POST` request to `http://localhost:3001/auth/login`
-
-You can leave the `request body` the same as the `Register`. Submit the request and you should receive a similar response:
-
-![](images/login_response.png)
-
-### Protecting Routes
-
-Just because our users can login and register, does not mean our data is secure, we need a way to protect certain routes from unauthorized users.
-
-Open the `routes/PostRouter.js` file.
-
-Start by requiring our middleware:
-
-```js
-const middleware = require('../middleware')
-```
-
-We'll start with the `POST` route, we want to ensure that users are authorized to submit new posts:
-
-- After the path, pass in the `stripToken` method
-  ```js
-  middleware.stripToken,
-  ```
-- Now if the request passes the first middleware, we want to verify that the token is legitimate and untampered
-  ```js
-  middleware.verifyToken,
-  ```
-  The final `router.post`:
-
-![](images/protected_create.png)
-
-Let's test this endpoint.
-
-Open `Insomnia` and submit a `POST` request to `http://localhost:3001/posts`
-
-The request body should be the following:
-
-```json
-{
-  "title": "string",
-  "body": "string",
-  "image": "string"
-}
-```
-
-Submit the request and you should receive the following response:
-
-![](images/failed_create.png)
-
-Looks like our middleware is doing it's job!
-
-Let's update our request to have an authorization header.
-
-#### Adding Auth Headers
-
----
-
-Submit a login request with the user you created previously.
-
-Copy the generated token and select the `auth` tab in `Insomnia`.
-
-Select the `Bearer Token` option from the dropdown.
-
-Paste your token into the `Token` field
-
-Add the following to the `Prefix` field: `Bearer`
-
-Resubmit your `POST` request to `http://localhost:3001/posts`
-
-You should receive a similar response:
-
-![](images/success_create.png)
+Submit the request, you should see a `200` status in your server logs and the new post being appended to the page.
 
 ## You Do
 
-- Implement the authorization middleware for the `PUT` and `DELETE` routes for posts. These routes must be protected from unauthorized access.
-- Create a route to update a users password.
-  - Think about how other sites do this functionality
-  - Think about what fields should be required
+- Implement delete post
+  - The `setPosts` function has been passed down to the `PostList` component
+  - A `deleteItem` function has been provided in the `PostList` component
+
+## Bonus
+
+Implement updating a post
+
+No components have been made for this so you'll have to create your own.
 
 ## Recap
 
-In this lesson, we learned how to implement and build Authorization/Authentication middleware. We protected sensitive routes from unauthorized access and added registration and login functionality.
+In this lesson we learned how to integrate authentication and authorization into our client. Our client's view changes based on some kind of state that we store to track changes. Our client facing application is not meant to be secure, thus we must rely on our backend to make sure that the requests are legitimate and authorized.
 
 ## Resources
 
-- [JsonWebToken](https://github.com/auth0/node-jsonwebtoken)
-- [Bcrypt](https://github.com/kelektiv/node.bcrypt.js#readme)
-- [Authentication Vs Authorization](https://medium.datadriveninvestor.com/authentication-vs-authorization-716fea914d55)
+- [Semantic UI React](https://react.semantic-ui.com/)
+- [Local Storage MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+- [Sequelize Auth Lesson](https://github.com/SEI-R-1-25/u3_lab_sequelize_auth)
