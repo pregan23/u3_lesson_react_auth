@@ -208,7 +208,7 @@ const submitPost = async (e) => {
   ```js
   const res = await axios.post(`${BASE_URL}/posts`, newPost, {
     headers: {
-      authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`
     }
   })
   ```
@@ -234,6 +234,39 @@ Final `submitPost`:
 Click the `Create Post` button and fill out the form, putting an image url for the `image` field.
 
 Submit the request, you should see a `200` status in your server logs and the new post being appended to the page.
+
+## Making Code Follow The DRY Principle
+
+You'll notice above that we're providing the token during our `axios` request. There's an easier way however!
+
+We can utilize `axios` interceptors!
+
+Start by importing `axios` in our `globals.js` file.
+
+Next we'll set up the interceptors:
+
+```js
+axios.interceptors.request.use(
+  (config) => {
+    let token = localStorage.getItem('token')
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => Promise.reject(error)
+)
+```
+
+Every time we submit a request with axios, it will run this function and provide the token on each request if it exists.
+
+Now we can remove the headers from our `submitPost` method!
+
+```js
+const res = await axios.post(`${BASE_URL}/posts`, newPost)
+```
+
+Test it out!
 
 ## You Do
 
