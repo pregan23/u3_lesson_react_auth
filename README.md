@@ -288,4 +288,4 @@ In this lesson we learned how to integrate authentication and authorization into
 
 - [Semantic UI React](https://react.semantic-ui.com/)
 - [Local Storage MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
-- [Sequelize Auth Lesson](https://github.com/SEI-R-1-25/u3_lab_sequelize_auth)
+- [Sequelize Auth Lesson](https://github.com/SEI-R-4-26/u3_lesson_sequelize_auth)
