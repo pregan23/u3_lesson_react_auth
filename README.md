@@ -208,7 +208,7 @@ const submitPost = async (e) => {
   ```js
   const res = await axios.post(`${BASE_URL}/posts`, newPost, {
     headers: {
-      Authorization: `Bearer ${token}`
+      authorization: `Bearer ${token}`
     }
   })
   ```
@@ -250,7 +250,7 @@ axios.interceptors.request.use(
   (config) => {
     let token = localStorage.getItem('token')
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
+      config.headers['authorization'] = `Bearer ${token}`
     }
     return config
   },
