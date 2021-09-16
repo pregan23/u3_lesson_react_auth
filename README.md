@@ -4,7 +4,7 @@
 
 ## Overview
 
-In this lesson, we'll learn to to integrate authentication into our react client. We'll learn how to persist an authenticated user in our application and how to protect resources from unauthenticated users. This app was build with Semantic UI but we'll be focusing on only integrating the `axios` calls.
+In this lesson, we'll learn to to integrate authentication into our react client. We'll learn how to persist an authenticated user in our application and how to protect resources from unauthenticated users. This app was built with Semantic UI but we'll be focusing on only integrating the `axios` calls.
 
 ## Getting Started
 
@@ -17,9 +17,9 @@ In this lesson, we'll learn to to integrate authentication into our react client
 
 ## Understanding The LocalStorage API
 
-In order to persist a users token, we'll need to use something called `localStorage`. `localStorage` is an in browser memory store.
+In order to persist a users token, we'll need to use something called `localStorage`. `localStorage` is an in-browser memory store.
 
-### What Is LocalStorage
+### What Is LocalStorage?
 
 > localStorage is an API that allows JavaScript sites and apps to save key/value pairs in a web browser with no expiration date. This means the data stored in the browser will persist even after the browser window is closed.
 
@@ -33,22 +33,22 @@ To use localStorage in your web applications, there are five methods to choose f
 4. `clear()`: Clear all localStorage
 5. `key()`: Passed a number to retrieve the key of a localStorage
 
-We'll utilize `LocalStorage` to save the users `JWT` once they've signed into our app.
+We'll utilize `localStorage` to save the users `JWT` once they've signed into our app.
 
 ## Frontend State and Security
 
-Contrary to belief, most frontends are not secure to the extent of our backend data. The purpose of the frontend is to display information to a user. As long as our backend is secure, the frontend will only conditonally display information based on certain criteria. With React, we'll use state and a special component called a `ProtectedRoute` to conditionally render specific parts of our UI once the user has successfully signed in. More often than not, your backend server will have more resources available to perform expensive computations and logic checks, we'll use that along with React's fast UI updates to build a seamless application for our users.
+Contrary to belief, most frontends are not secure to the extent of our backend data. The purpose of the frontend is to display information to a user. As long as our backend is secure, the frontend will only conditonally display information based on certain criteria. With React, we'll use state and a special component called a `ProtectedRoute` to conditionally render specific parts of our UI once the user has successfully signed in. More often than not, your backend server will have more resources available to perform expensive computations and logic checks. We'll use that along with React's fast UI updates to build a seamless application for our users.
 
 ### Managing Visibility With State
 
-Open your `App.js` file located within the `client` directory. At the top of the component, you'll find `2` pieces of state:
+Open your `App.js` file located within the `client` directory. At the top of the component, you'll find **2** pieces of state:
 
 ```js
 const [authenticated, toggleAuthenticated] = useState(false)
 const [user, setUser] = useState(null)
 ```
 
-Believe it or not, these two pieces of state are going to control the visibility of `private` components for our entire application.
+These two pieces of state are going to control the visibility of _private_ components for our entire application.
 
 We'll use the `authenticated` state, to actually toggle the UI and the `user` state to store some kind of information about our user.
 
@@ -67,7 +67,7 @@ const handleSubmit = async (e) => {
 In order to complete this function, we'll need to do a few things:
 
 - Submit the users information to our backend via a service function
-- Reset populated form to empty once the request completes successfully
+- Reset the populated form to empty once the request completes successfully
 - Redirect the user to the login page. **(Never sign in a user after registering!)**
 
 We'll start by importing our `RegisterUser` function from `services`:
@@ -77,7 +77,6 @@ import { RegisterUser } from '../services/Auth'
 ```
 
 The `RegisterUser` function accepts one argument of `data`. This `data` argument should be an object with the following information:
-
 - name
 - email
 - password
@@ -123,7 +122,6 @@ We'll start by providing `setUser` and `toggleAuthenticated` to the `SignIn` com
 ```
 
 We'll utilize these methods to:
-
 - Tell our protected route that someone is signed in.
 - Update our UI to display different information in the `Nav` component.
 
@@ -139,11 +137,10 @@ import { SignInUser } from '../services/Auth'
 ```
 
 `SignInUser` accepts one argument of data. Like register, `data` is an object containing the following information:
-
 - email
 - password
 
-In the `handleSubmit`, we'll invoke the `SignInUser` function, provide the `formValues` state as an argument and capture the return value with a variable called `payload`:
+In the `handleSubmit`, we'll invoke the `SignInUser` function, provide the `formValues` state as an argument, and capture the return value with a variable called `payload`:
 
 ```js
 const payload = await SignInUser(formValues)
@@ -167,32 +164,30 @@ Once our user has been set, we'll toggle the `authenticated` state using `toggle
 props.toggleAuthenticated(true)
 ```
 
-Finally, we'll redirect the user to a protected page with a url of `/feed`:
+Finally, we'll redirect the user to a protected page with a URL of `/feed`:
 
 ```js
 props.history.push('/feed')
 ```
 
-### Storing The JWT
+### Storing the JWT
 
-Now that our `handleSubmit` is set up, we should be able to sign in successfully. However, one problem. We never stored the users token!
+Now that our `handleSubmit` is set up, we should be able to sign in successfully. However, one problem: we never stored the users token!
 
 Open the `Auth.js` file located in `services`. We need to make a change to `SignInUser`.
 
 In this function, our API is returning two things:
-
 - a user object
 - a JWT
 
-We're already returning the `user` object from this function, however it's also a good idea to store the token at this point. Add the following to `SignInUser` **before** the return statement:
+We're already returning the `user` object from this function, however it's also a good idea to store the token at this point. Add the following to `SignInUser` ***before*** the return statement:
 
 ```js
 localStorage.setItem('token', res.data.token)
 ```
 
-Here, we're using the `LocalStorage` API to store the users authentication token with a key of `token`. `setItem` takes two arguments. **order matters**:
-
-- Key to reference the data we store, in this case we're using `token`
+Here, we're using the `localStorage` API to store the user's authentication token with a key of `token`. `setItem` takes two arguments. **order matters**:
+- Key to reference the data we store. In this case we're using `token`.
 - Value to store. **(The value must always be a string)**
 
 Now that we've set the ability to store the token, let's try signing in with the user you created earlier.
@@ -201,17 +196,17 @@ Now that we've set the ability to store the token, let's try signing in with the
 
 At this point, we should be navigated to `http://localhost:3000/feed` once we sign in. However we don't have a component to display just yet for that route. We'll create a component typically called `ProtectedRoute` to conditionally render any components we want to keep hidden from unauthorized users.
 
-> Protected Routes are routes that can only be accessed if a condition is met(usually, if user is properly authenticated). It returns a Route that either renders a component or redirects a user to another route based on a set condition.
+> Protected Routes are routes that can only be accessed if a condition is met (usually, if user is properly authenticated). It returns a Route that either renders a component or redirects a user to another route based on a set condition.
 
 In `components`, create a file called `ProtectedRoute.js` or `ProtectedRoute.jsx`.
 
-We'll start by importing react:
+We'll start by importing React:
 
 ```js
 import React from 'react'
 ```
 
-Next we import `two` things from `react router`:
+Next we import **two** things from `react-router`:
 
 - Route: Component that displays content based on a path
 - Redirect: Component that redirects to provided path, typically used to keep unwanted guests from certain pages
@@ -220,7 +215,7 @@ Next we import `two` things from `react router`:
 import { Redirect, Route } from 'react-router'
 ```
 
-Now we can set up the skeleton for our `ProtectedRoute`, we'll utilize destructuring to pick out specific props and keep others in a variable called `rest`:
+Now we can set up the skeleton for our `ProtectedRoute`. We'll utilize destructuring to pick out specific props and keep others in a variable called `rest`:
 
 ```jsx
 export default function ProtectedRoute({
@@ -248,14 +243,14 @@ return (
 )
 ```
 
-Now that our `ProtectedRoute` component is complete, we can import it into `App.js` and place it below our current routes (we'll also import the proved Feed component while we're here):
+Now that our `ProtectedRoute` component is complete, we can import it into `App.js` and place it below our current routes (we'll also import the provided Feed component while we're here):
 
 ```js
 import ProtectedRoute from './components/ProtectedRoute'
 import Feed from './components/Feed'
 ```
 
-We'll utilize a guard operator around our protected route to ensure that it see's the most up to date information from our state:
+We'll utilize a guard operator around our protected route to ensure that it sees the most up-to-date information from our state:
 
 ```jsx
 {
@@ -272,9 +267,9 @@ We'll utilize a guard operator around our protected route to ensure that it see'
 
 Let's try signing in again. Once you've signed in successfully, you should be redirected to the `/feed` path and a list of information should appear. Pay close attention to the navigation as well. The UI will change at this point.
 
-Now that we can access the Feed component, we've completed our App! Well not really. Theres a slight problem. Refresh your browser and observe the behavior...
+Now that we can access the `Feed` component, we've completed our App! Well, not really. Theres a slight problem. Refresh your browser and observe the behavior...
 
-How about if we navigate directly to the Feed component by changing the url?
+How about if we navigate directly to the Feed component by changing the URL?
 
 This brings us to the next part of our lesson and one of the most important ones!
 
@@ -292,7 +287,7 @@ We'll start by importing the `CheckSession` function from our auth service:
 import { CheckSession } from './services/Auth'
 ```
 
-Next we'll create a method called `checkToken` that will make a `GET` request to our bakend with the currently stored token to check it's validity:
+Next, we'll create a method called `checkToken` that will make a `GET` request to our bakend with the currently stored token to check it's validity:
 
 ```js
 const checkToken = async () => {
@@ -318,7 +313,7 @@ Finally, we'll toggle the `authenticated` state:
 toggleAuthenticated(true)
 ```
 
-We now need a way to trigger this function once our app loads, let's import `useEffect` from React.
+We now need a way to trigger this function once our app loads. Let's import `useEffect` from React.
 
 ```js
 import { useEffect, useState } from 'react'
@@ -365,10 +360,9 @@ Client.interceptors.request.use(
 ```
 
 With this bit of code we'll accomplish the following:
-
 - Intercept every request our `Client`/instance of axios makes.
 - Read the configuration for the request
-- Read the token in localstorage
+- Read the token in `localStorage`
 - If the token exists, we modify the request headers and provide our token in the `authorization` header with the standard JWT format of `Bearer {token}`
 - We then return the config so that the request can complete successfully
 - The second function will give us back any errors that occur during a request as normal.
@@ -377,8 +371,7 @@ Let's try refreshing one more time. You should now be able to access the `feed` 
 
 ## Recap
 
-In this lesson we learned how to integrate authentication and authorization into our client. Our client's view changes based on some kind of state that we store to track changes. Our client facing application is not meant to be secure, thus we must rely on our backend to make sure that the requests are legitimate and authorized.
+In this lesson we learned how to integrate authentication and authorization into our client. Our client's view changes based on some kind of state that we store to track changes. Our client-facing application is not meant to be secure, thus we must rely on our backend to make sure that the requests are legitimate and authorized.
 
 ## Resources
-
 - [Local Storage MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
