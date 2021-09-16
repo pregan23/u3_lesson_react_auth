@@ -247,7 +247,7 @@ Now that our `ProtectedRoute` component is complete, we can import it into `App.
 
 ```js
 import ProtectedRoute from './components/ProtectedRoute'
-import Feed from './components/Feed'
+import Feed from './pages/Feed'
 ```
 
 We'll utilize a guard operator around our protected route to ensure that it sees the most up-to-date information from our state:
