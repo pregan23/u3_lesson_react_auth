@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { RegisterUser } from '../services/Auth'
 
 const iState = {
   name: '',
@@ -22,13 +21,6 @@ export default function Register(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    await RegisterUser({
-      name: formValues.name,
-      email: formValues.email,
-      password: formValues.password
-    })
-    setFormValues(iState)
-    props.history.push('/signin')
   }
 
   return (

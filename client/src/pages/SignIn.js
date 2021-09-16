@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { SignInUser } from '../services/Auth'
 
 export default function SignIn(props) {
   const [formValues, setFormValues] = useState({ email: '', password: '' })
@@ -10,11 +9,6 @@ export default function SignIn(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const payload = await SignInUser(formValues)
-    setFormValues({ email: '', password: '' })
-    props.setUser(payload)
-    props.toggleAuthenticated(true)
-    props.history.push('/feed')
   }
 
   return (
