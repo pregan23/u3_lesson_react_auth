@@ -1,38 +1,38 @@
 import React from 'react'
-import { Button, Container } from 'semantic-ui-react'
-
-const Nav = (props) => {
-  const displayButtons = () => {
-    if (props.authenticated) {
-      return (
-        <div>
-          <Button
-            onClick={() => props.toggleCreate(true)}
-            icon="edit"
-            labelPosition="right"
-            color="blue"
-            content="Create Post"
-          />
-          <Button onClick={props.logOut} color="violet" content="Log Out" />
-        </div>
-      )
-    }
-    return (
-      <div>
-        <Button onClick={() => props.toggleLogin(true)} color="violet">
-          Login
-        </Button>
-        <Button onClick={() => props.toggleRegister(true)} color="teal">
-          Register
-        </Button>
-      </div>
+import { NavLink } from 'react-router-dom'
+export default function Nav({ authenticated, user, handleLogOut }) {
+  let authenticatedOptions
+  if (user) {
+    authenticatedOptions = (
+      <nav>
+        <h3>Welcome {user.email}!</h3>
+        <NavLink onClick={handleLogOut} to="/">
+          Sign Out
+        </NavLink>
+      </nav>
     )
   }
+
+  const publicOptions = (
+    <nav>
+      <NavLink to="/">Home</NavLink>
+      <NavLink to="/register">Register</NavLink>
+      <NavLink to="/signin">Sign In</NavLink>
+    </nav>
+  )
+
   return (
-    <Container className="nav" textAlign="right">
-      {displayButtons()}
-    </Container>
+    <header>
+      <NavLink to="/">
+        <div className="logo-wrapper" alt="logo">
+          <img
+            className="logo"
+            src="https://avatars.dicebear.com/api/gridy/app.svg"
+            alt="welcome banner"
+          />
+        </div>
+      </NavLink>
+      {authenticated && user ? authenticatedOptions : publicOptions}
+    </header>
   )
 }
-
-export default Nav

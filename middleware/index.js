@@ -32,6 +32,8 @@ const verifyToken = (req, res, next) => {
   let payload = jwt.verify(token, APP_SECRET)
   //   Verifys the token is legit
   if (payload) {
+    res.locals.payload = payload // Passes the decoded payload to the next function
+
     //   Calls the next function if the token is valid
     return next()
   }
@@ -41,13 +43,11 @@ const verifyToken = (req, res, next) => {
 const stripToken = (req, res, next) => {
   try {
     const token = req.headers['authorization'].split(' ')[1]
-    console.log(token)
     // Gets the token from the request headers {authorization: Bearer Some-Token}
     // Splits the value of the authorization header
     if (token) {
       res.locals.token = token
       //   If the token exists we add it to the request lifecycle state
-
       return next()
     }
   } catch (error) {

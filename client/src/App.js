@@ -1,87 +1,69 @@
 import { useEffect, useState } from 'react'
-import './styles/App.css'
-import Login from './components/Login'
+import { Route, Switch } from 'react-router'
 import Nav from './components/Nav'
-import Register from './components/Register'
-import { Container } from 'semantic-ui-react'
-import PostList from './components/PostList'
-import CreatePost from './components/CreatePost'
-import axios from 'axios'
-import { BASE_URL } from './globals'
+import ProtectedRoute from './components/ProtectedRoute'
+import Feed from './pages/Feed'
+import Home from './pages/Home'
+import Register from './pages/Register'
+import SignIn from './pages/SignIn'
+import { CheckSession } from './services/Auth'
+import './styles/App.css'
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(false)
-  const [loginOpen, toggleLoginOpen] = useState(false)
-  const [registerOpen, toggleRegisterOpen] = useState(false)
-  const [createPostOpen, toggleCreatePostOpen] = useState(false)
-  const [newPost, setNewPost] = useState({ title: '', body: '', image: '' })
-  const [posts, setPosts] = useState([])
+  const [authenticated, toggleAuthenticated] = useState(false)
+  const [user, setUser] = useState(null)
 
-  const getPosts = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/posts`)
-      setPosts(res.data)
-    } catch (error) {
-      console.log(error)
-    }
+  const checkToken = async () => {
+    //If a token exists, sends token to localstorage to persist logged in user
+    const session = await CheckSession()
+    setUser(session)
+    toggleAuthenticated(true)
   }
 
-  const logOut = () => {}
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setNewPost({ ...newPost, [name]: value })
-  }
-
-  const submitPost = async (e) => {
-    e.preventDefault()
-    try {
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const closeCreate = () => {
-    toggleCreatePostOpen(false)
-    setNewPost({ title: '', body: '', image: '' })
+  const handleLogOut = () => {
+    //Reset all auth related state and clear localstorage
+    setUser(null)
+    toggleAuthenticated(false)
+    localStorage.clear()
   }
 
   useEffect(() => {
-    getPosts()
+    const token = localStorage.getItem('token')
+    // Check if token exists before requesting to validate the token
+    if (token) {
+      checkToken()
+    }
   }, [])
 
   return (
     <div className="App">
       <Nav
-        toggleLogin={toggleLoginOpen}
-        toggleRegister={toggleRegisterOpen}
-        toggleCreate={toggleCreatePostOpen}
         authenticated={authenticated}
-        logOut={logOut}
+        user={user}
+        handleLogOut={handleLogOut}
       />
-      <Login
-        loginOpen={loginOpen}
-        toggleLogin={toggleLoginOpen}
-        toggleAuthenticated={setAuthenticated}
-      />
-      <Register
-        registerOpen={registerOpen}
-        toggleRegister={toggleRegisterOpen}
-      />
-      <Container>
-        <PostList
-          authenticated={authenticated}
-          posts={posts}
-          setPosts={setPosts}
-        />
-        <CreatePost
-          handleChange={handleChange}
-          submitPost={submitPost}
-          newPost={newPost}
-          modalOpen={createPostOpen}
-          closeModal={closeCreate}
-        />
-      </Container>
+      <main>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route
+            path="/signin"
+            component={(props) => (
+              <SignIn
+                {...props}
+                setUser={setUser}
+                toggleAuthenticated={toggleAuthenticated}
+              />
+            )}
+          />
+          <Route path="/register" component={Register} />
+          <ProtectedRoute
+            authenticated={authenticated}
+            user={user}
+            path="/feed"
+            component={Feed}
+          />
+        </Switch>
+      </main>
     </div>
   )
 }
