@@ -212,7 +212,7 @@ Next we import **two** things from `react-router`:
 - Redirect: Component that redirects to provided path, typically used to keep unwanted guests from certain pages
 
 ```js
-import { Redirect, Route } from 'react-router'
+import { Redirect, Route } from 'react-router-dom'
 ```
 
 Now we can set up the skeleton for our `ProtectedRoute`. We'll utilize destructuring to pick out specific props and keep others in a variable called `rest`:
