@@ -357,6 +357,7 @@ Client.interceptors.request.use(
     // Provides the token to each request that passes through axios
   },
   (error) => Promise.reject(error)
+)
 ```
 
 With this bit of code we'll accomplish the following:
