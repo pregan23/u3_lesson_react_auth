@@ -1,6 +1,6 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
-export default function Nav({ authenticated, user, handleLogOut }) {
+import { Link } from 'react-router-dom'
+
+const Nav = ({ authenticated, user, handleLogOut }) => {
   let authenticatedOptions
   if (user) {
     authenticatedOptions = (
@@ -15,15 +15,15 @@ export default function Nav({ authenticated, user, handleLogOut }) {
 
   const publicOptions = (
     <nav>
-      <NavLink to="/">Home</NavLink>
-      <NavLink to="/register">Register</NavLink>
-      <NavLink to="/signin">Sign In</NavLink>
+      <Link to="/">Home</Link>
+      <Link to="/register">Register</Link>
+      <Link to="/signin">Sign In</Link>
     </nav>
   )
 
   return (
     <header>
-      <NavLink to="/">
+      <Link to="/">
         <div className="logo-wrapper" alt="logo">
           <img
             className="logo"
@@ -31,8 +31,10 @@ export default function Nav({ authenticated, user, handleLogOut }) {
             alt="welcome banner"
           />
         </div>
-      </NavLink>
+      </Link>
       {authenticated && user ? authenticatedOptions : publicOptions}
     </header>
   )
 }
+
+export default Nav

@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { Route, Switch } from 'react-router'
+import { Route, Routes } from 'react-router'
 import Nav from './components/Nav'
 import Home from './pages/Home'
 import Register from './pages/Register'
 import SignIn from './pages/SignIn'
 import './styles/App.css'
 
-function App() {
+const App = () => {
   const [authenticated, toggleAuthenticated] = useState(false)
   const [user, setUser] = useState(null)
 
@@ -25,11 +25,11 @@ function App() {
         handleLogOut={handleLogOut}
       />
       <main>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/signin" component={(props) => <SignIn {...props} />} />
-          <Route path="/register" component={Register} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={Home} />
+          <Route path="/signin" element={(props) => <SignIn {...props} />} />
+          <Route path="/register" element={Register} />
+        </Routes>
       </main>
     </div>
   )

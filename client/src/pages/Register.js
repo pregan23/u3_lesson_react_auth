@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 const iState = {
   name: '',
@@ -7,7 +7,7 @@ const iState = {
   confirmPassword: ''
 }
 
-export default function Register(props) {
+const Register = () => {
   const [formValues, setFormValues] = useState({
     name: '',
     email: '',
@@ -84,3 +84,5 @@ export default function Register(props) {
     </div>
   )
 }
+
+export default Register

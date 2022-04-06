@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { GetPosts } from '../services/PostServices'
 
-export default function Feed() {
+const Feed = () => {
   const [posts, setPosts] = useState([])
 
   const handlePosts = async () => {
     const data = await GetPosts()
     setPosts(data)
   }
+
   useEffect(() => {
     handlePosts()
   }, [])
+  
   return (
     <div className="grid col-4">
       {posts.map((post) => (
@@ -25,3 +27,5 @@ export default function Feed() {
     </div>
   )
 }
+
+export default Feed

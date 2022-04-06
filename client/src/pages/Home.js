@@ -1,15 +1,20 @@
-import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import Welcome from '../assets/welcome.svg'
-export default function Home({ history }) {
+
+const Home = () => {
+  let navigate = useNavigate()
+
   return (
     <div className="home-container col">
       <img src={Welcome} />
 
       <section className="welcome-signin">
-        <button onClick={() => history.push('/signin')}>
+        <button onClick={() => navigate('/signin')}>
           Click Here To Get Started
         </button>
       </section>
     </div>
   )
 }
+
+export default Home

@@ -1,5 +1,6 @@
 'use strict'
 const faker = require('faker')
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     let posts = [...Array(5)].map((_) => ({

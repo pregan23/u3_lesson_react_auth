@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-export default function SignIn(props) {
+const SignIn = () => {
   const [formValues, setFormValues] = useState({ email: '', password: '' })
 
   const handleChange = (e) => {
@@ -44,3 +44,5 @@ export default function SignIn(props) {
     </div>
   )
 }
+
+export default SignIn
