@@ -102,7 +102,7 @@ setFormValues(iState)
 Finally, we'll redirect the user to our Sign In page:
 
 ```js
-props.history.push('/signin')
+navigate('/signin')
 ```
 
 At this point, you can try to register a user.
@@ -167,7 +167,7 @@ props.toggleAuthenticated(true)
 Finally, we'll redirect the user to a protected page with a URL of `/feed`:
 
 ```js
-props.history.push('/feed')
+navigate('/feed')
 ```
 
 ### Storing the JWT
