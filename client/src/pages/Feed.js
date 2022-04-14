@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { GetPosts } from '../services/PostServices'
 
-const Feed = () => {
+const Feed = ({ user, authenticated}) => {
+  let navigate = useNavigate()
   const [posts, setPosts] = useState([])
   
   useEffect(() => {
@@ -12,7 +14,7 @@ const Feed = () => {
     handlePosts()
   }, [])
   
-  return (
+  return (user && authenticated) ? (
     <div className="grid col-4">
       {posts.map((post) => (
         <div className="card" key={post.id}>
@@ -23,6 +25,11 @@ const Feed = () => {
           <p>{post.body.substring(0, 80)}...</p>
         </div>
       ))}
+    </div>
+  ) : (
+    <div className="protected">
+      <h3>Oops!  You must be signed in to do that!</h3>
+      <button onClick={() => navigate('/signin')}>Sign In</button>
     </div>
   )
 }
