@@ -6,9 +6,9 @@ const Nav = ({ authenticated, user, handleLogOut }) => {
     authenticatedOptions = (
       <nav>
         <h3>Welcome {user.email}!</h3>
-        <NavLink onClick={handleLogOut} to="/">
+        <Link onClick={handleLogOut} to="/">
           Sign Out
-        </NavLink>
+        </Link>
       </nav>
     )
   }
