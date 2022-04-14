@@ -11,7 +11,6 @@ In this lesson, we'll learn how to integrate authentication into our React clien
 - `Fork` and `Clone`
 - `npm install` to install our back-end dependencies
 - `npm run dev` to spin up our Express server
-- The back-end will interface with the postgres database we set up yesterday!
 - `cd client` to move into our front-end
 - `npm install` to install our front-end dependencies
 - `npm start` to spin up our React app
@@ -38,7 +37,7 @@ We'll utilize `localStorage` to save the users `JWT` once they've signed into ou
 
 ## Frontend State and Security
 
-Contrary to popular belief, most front-ends are not secure to the extent of our back-end data. The purpose of the front-end is to display information to a user. As long as our back-end is secure, the front-end will only conditionally display information based on certain criteria. With React, we'll use *state* and a special component called a `ProtectedRoute` to conditionally render specific parts of our UI once the user has successfully signed in. More often than not, your back-end server will have more resources available to perform expensive computations and logic checks. We'll use that along with React's fast UI updates to build a seamless application for our users.
+Contrary to popular belief, most front-ends are not secure to the extent of our back-end data. The purpose of the front-end is to display information to a user. As long as our back-end is secure, the front-end will only conditionally display information based on certain criteria. With React, we'll use *state* and a protected route to conditionally render specific parts of our UI once the user has successfully signed in. More often than not, your back-end server will have more resources available to perform expensive computations and logic checks. We'll use that along with React's fast UI updates to build a seamless application for our users.
 
 ### Managing Visibility With State
 
@@ -120,7 +119,7 @@ navigate('/signin')
 
 At this point, you can try to register a user.
 
-The final handleSubmit function in Register should look like this:
+The final handleSubmit function in **Register** should look like this:
 
 ```js
 const handleSubmit = async (e) => {
@@ -211,7 +210,7 @@ Back inside our handleSubmit...
 navigate('/feed')
 ```
 
-The final handleSubmit function in SignIn should look like this:
+The final handleSubmit function in **SignIn** should look like this:
 
 ```js
 const handleSubmit = async (e) => {
@@ -248,65 +247,65 @@ Now that we've set the ability to store the token, let's try signing in with the
 
 ## Protected Routes
 
-At this point, we should be automatically navigated to `http://localhost:3000/feed` once we sign in. However we don't have a component to display just yet for that route. We'll create a component typically called `ProtectedRoute` to conditionally render any components we want to keep hidden from unauthorized users.
+At this point, we should be automatically navigated to `http://localhost:3000/feed` once we sign in. However, our user could still navigate to routes without being signed in. We'll use our `user` and `authenticated` states to conditionally render the components we want to keep hidden from unauthorized users.
 
-> Protected Routes are routes that can only be accessed if a condition is met (usually, if user is properly authenticated). It returns a Route that either renders a component or redirects a user to another route based on a set condition.
+> Protected Routes are routes that can only be accessed if a condition is met (usually, if user is properly authenticated). It returns the component or redirects a user to another route based on a set condition.
 
-In `components`, create a file called `ProtectedRoute.jsx`.
-
-We'll start by importing **two** things from `react-router-dom`:
-- Route: Component that displays content based on a path
-- Redirect: Component that redirects to a provided path, typically used to keep unwanted guests from certain pages
+In `App.js`, let's pass our `user` and `authenticated` states as props to our Feed component...
 
 ```js
-import { Redirect, Route } from 'react-router-dom'
+<Route path="/feed" element={<Feed user={user} authenticated={authenticated}/>} />
 ```
 
-Now, we can set up the skeleton for our `ProtectedRoute`. We'll utilize destructuring to pick out specific props and keep others in a variable called `rest`:
+Over in `Feed.js`, let's be sure and pass those props in. We'll destructure them...
 
 ```js
-const ProtectedRoute = ({ user, authenticated, component: Component, ...rest }) => {
+const Feed = ({ user, authenticated }) => {
 
 ...
 ```
 
-Next, we'll set up the logic to conditionally render a specific component if our `user` and `authenticated` values are truthy with a ternary:
+We're going to wrap the JSX in our return statement in a ternary that checks if a) our user exists and b) that they are authenticated.  If authenticated, we'll show the posts on the feed! If not, we need to send our user back to the Sign In page.
+
+First, let's set up that ternary. We want to check if both conditions are true, so we'll use &&:
 
 ```js
-return (
-  <Route
-    {...rest}
-    element={(props) =>
-      user && authenticated ? (
-        <Component /> // Render our chosen component if a user exists and they are authenticated
-      ) : (
-        <Redirect to="/signin" /> // Otherwise, use the Redirect component to return the user to the sign in screen
-      )
-    }
-  />
+return (user && authenticated) ? (
+  <div className="grid col-4">
+    {posts.map((post) => (
+      <div className="card" key={post.id}>
+        <h3>{post.title}</h3>
+        <div>
+          <img src={post.image} alt="post"/>
+        </div>
+        <p>{post.body.substring(0, 80)}...</p>
+      </div>
+    ))}
+  </div>
+  ) : (
+  // This is where we'll put our JSX that our unauthenticated user will see...
 )
 ```
 
-Now that our `ProtectedRoute` component is complete, we can import it into `App.js` and place it below our current routes (we'll also import the provided `Feed` component while we're here):
+We'll need useNavigate again for this next part:
 
 ```js
-import ProtectedRoute from './components/ProtectedRoute'
-import Feed from './pages/Feed'
+import { useNavigate } from 'react-router-dom'
 ```
 
-We'll utilize a what's called a "guard operator" around our protected route to ensure that it sees the most up-to-date information from our state:
+```js
+let navigate = useNavigate()
+```
 
-```jsx
-{
-  user && authenticated && (
-    <ProtectedRoute
-      authenticated={authenticated}
-      user={user}
-      path="/feed"
-      component={Feed}
-    />
+Next, we'll set up the JSX for an unauthenticated user:
+
+```js
+) : (
+    <div className="protected">
+      <h3>Oops! You must be signed in to do that!</h3>
+      <button onClick={()=> navigate('/signin')}>Sign In</button>
+    </div>
   )
-}
 ```
 
 Let's try signing in again. Once you've signed in successfully, you should be redirected to the `/feed` path and a list of information should appear. Pay close attention to the navigation as well. The UI will change at this point.
