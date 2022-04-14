@@ -322,7 +322,7 @@ Nothing is more frustrating to a user than an application that constantly kicks 
 
 Open the `App.js` file.
 
-What we'll do here is add some logic to check if a token is already stored in localStorage. If it is, we'll make a request to a route in our backend that will validate and decrypt the currently stored token. This decrypted token will contain the same information about the user that we stored after signing in.
+What we'll do here is add some logic to check if a token is already stored in localStorage. If it is, we'll make a request to a route in our back-end that will validate and decrypt the currently stored token. This decrypted token will contain the same information about the user that we stored after signing in.
 
 We'll start by importing the `CheckSession` function from our auth service:
 
@@ -359,7 +359,7 @@ toggleAuthenticated(true)
 We now need a way to trigger this function once our app loads. Let's import `useEffect` from React.
 
 ```js
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 ```
 
 We'll utilize `useEffect` to check if a token exists currently. If and **only** if a token exists, we'll invoke our `checkToken` function:
@@ -384,7 +384,7 @@ Lucky for us, we're using `axios`. `axios` has a really cool feature called `int
 
 Open the `api.js` file located in `services`.
 
-Let's add the following **above** our export and **below** our `Client` instance:
+Let's add the following **above** our export of `Client` and **below** our `Client` instance:
 
 ```js
 // Intercepts every request axios makes
