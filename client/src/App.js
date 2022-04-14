@@ -11,7 +11,7 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   const handleLogOut = () => {
-    //Reset all auth related state and clear localstorage
+    //Reset all auth related state and clear localStorage
     setUser(null)
     toggleAuthenticated(false)
     localStorage.clear()
@@ -26,9 +26,9 @@ const App = () => {
       />
       <main>
         <Routes>
-          <Route path="/" element={Home} />
-          <Route path="/signin" element={(props) => <SignIn {...props} />} />
-          <Route path="/register" element={Register} />
+          <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </main>
     </div>

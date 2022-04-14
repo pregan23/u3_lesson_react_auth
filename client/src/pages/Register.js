@@ -1,12 +1,5 @@
 import { useState } from 'react'
 
-const iState = {
-  name: '',
-  email: '',
-  password: '',
-  confirmPassword: ''
-}
-
 const Register = () => {
   const [formValues, setFormValues] = useState({
     name: '',
