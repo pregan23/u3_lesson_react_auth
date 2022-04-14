@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Route, Routes } from 'react-router'
 import Nav from './components/Nav'
-import Home from './pages/Home'
 import Register from './pages/Register'
-import './styles/App.css'
 import SignIn from './pages/SignIn'
 import Feed from './pages/Feed'
+import Home from './pages/Home'
+import './styles/App.css'
 
 const App = () => {
   const [authenticated, toggleAuthenticated] = useState(false)
