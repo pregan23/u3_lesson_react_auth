@@ -4,7 +4,7 @@
 
 ## Overview
 
-In this lesson, we'll learn to to integrate authentication into our react client. We'll learn how to persist an authenticated user in our application and how to protect resources from unauthenticated users. This app was built with Semantic UI but we'll be focusing on only integrating the `axios` calls.
+In this lesson, we'll learn how to integrate authentication into our react client. We'll learn how to persist an authenticated user in our application and how to protect resources from unauthenticated users. This app was built with Semantic UI but we'll be focusing on only integrating the `axios` calls.
 
 ## Getting Started
 
