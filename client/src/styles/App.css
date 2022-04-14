@@ -176,3 +176,11 @@ form button:disabled {
 .card img {
   width: 100%;
 }
+
+.protected {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
