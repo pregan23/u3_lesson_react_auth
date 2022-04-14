@@ -11,6 +11,7 @@ In this lesson, we'll learn how to integrate authentication into our React clien
 - `Fork` and `Clone`
 - `npm install` to install our back-end dependencies
 - `npm run dev` to spin up our Express server
+- The back-end will interface with the postgres database we set up yesterday!
 - `cd client` to move into our front-end
 - `npm install` to install our front-end dependencies
 - `npm start` to spin up our React app
