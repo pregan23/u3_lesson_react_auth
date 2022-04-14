@@ -318,7 +318,7 @@ This brings us to the next part of our lesson and one of the most important ones
 
 ## Persisting Logged In Users
 
-Nothing is more frustrating to a user than when an application that constantly kicks them back to a log in screen when they refresh. Luckily, that's a simple fix.
+Nothing is more frustrating to a user than an application that constantly kicks them back to a log in screen when they refresh. Luckily, that's a simple fix.
 
 Open the `App.js` file.
 
